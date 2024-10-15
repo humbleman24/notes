@@ -6,7 +6,7 @@
 
 use stacked self-attention and point-wise, fully connected layers for both the encoder and decoder
 
-<img src="D:/notes/pic/transformer架构图.png" alt="transformer structure" style="zoom:75%;" />
+<img src="./pic/transformer架构图.png" alt="transformer structure" style="zoom:75%;" />
 
 
 
