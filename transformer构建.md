@@ -6,8 +6,7 @@
 
 use stacked self-attention and point-wise, fully connected layers for both the encoder and decoder
 
-<img src="./pic/transformer架构图.png" alt="transformer structure" style="zoom:75%;" />
-
+<img src="./pic/transformer架构图.png" alt="transformer structure" style="zoom:67%;" />
 
 
 ##### encoder
@@ -40,9 +39,11 @@ There are three parameterized matrix that are intend to learn the attention from
 
 As the name, embedding or sequence are multiplied with the above three matrix to generate middle feature:
 $$
-E_Q = Embedding * M_Q\\
-E_K = Embedding * M_K\\
-E_V = Embedding * M_V
+\begin{align}
+E_Q = Embedding * M_Q \\
+E_K = Embedding * M_K \\
+E_V = Embedding * M_V \\
+\end{align}
 $$
 
 
