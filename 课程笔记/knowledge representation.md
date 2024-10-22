@@ -65,7 +65,33 @@ SAT Solver: look for a satisfying interpretation for clauses that are satisfiabl
 
 
 
+### Horn Clauses
 
+Horn clauses is a particular subset of FOL that remains expressive for most problems, but becomes more manageable for automated resolution procedures.
+
+A clause in resolution based system is **a disjunction of literals**.
+
+A horn clause is a clause with **at most** **one positive literal**, which by definition can be represented as an implication
+
+Types of Horn Clause:
+
+- Definite (positive) clause: Horn clause with **exactly one** positive literal
+- Fact: definite clause with no negative literals and without variables
+
+- Goal (negative) clause: Horn clause with no positive literal
+
+##### Resolution
+
+1. Takes two horn clauses and produces another clause
+2. the new clause is implied by the two previous clauses
+3. removes complementary literals from the new clause
+4. terminates when the empty clause is produced ([])
+
+#### SLD Resolution
+
+选择性线性确定性子句归结
+
+For Horn Clause, we can restrict ourselves to SLD-Resolution. This will considerably simplify the search for derivations.
 
 
 
