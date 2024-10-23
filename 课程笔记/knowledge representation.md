@@ -80,7 +80,7 @@ Types of Horn Clause:
 
 - Goal (negative) clause: Horn clause with no positive literal
 
-##### Resolution
+#### Resolution
 
 1. Takes two horn clauses and produces another clause
 2. the new clause is implied by the two previous clauses
@@ -93,11 +93,44 @@ Types of Horn Clause:
 
 For Horn Clause, we can restrict ourselves to SLD-Resolution. This will considerably simplify the search for derivations.
 
+### Logic programming
 
+- statement of facts and propositions that must be satisfied
+- specify knowledge (facts) and how the knowledge can be applied
+- programming environment uses built-in procedures to **reason** about the knowledge and apply resolution and unification for proving statements or answering questions
 
+### Prolog
 
+#### Basic syntax
 
+everything is considered a term; there are different types of terms
 
+1. **Atoms**: sequence of characters **beginning with lower case**, or a sequence of characters **enclosed in single quotes**, or a sequence of special characters.
+2. **Number**
+3. **Variables**: sequence of characters beginning with **upper case or underscore** (_ anonymous variable)
+4. **Compound terms**: 
+   - A functor followed by a sequence of arguments
+   - Functor must be an atom (follow the same rule as atom!!!!)
+   - arguments can be anything, arity represents the number of arguments of a compound term
+5. **List**: 
+   - ordered set of terms
+   - follow the structure of **[H|T]**, where H is the head of the list and T is the tail
+
+#### Negation
+
+To prove not P, we try to prove P. If proving P fails, the not P is True; if we prove P then not P fails.
+
+\\+ is the sign of Negation!
+
+#### Unification
+
+?? Unification是在两个项（term）之间寻找一种匹配方式，使得它们能够相互一致。涉及**变量的绑定，原子的匹配，结构的比较**。
+
+作用：Prolog通过Unification 将 查询 与 事实、规则 进行匹配，从而找到满足条件的解。
+
+**$t_1$  unifies** with  $t_2$ if there is a subsititution $S$ such that $apply(S, t_1) = apply(S, t_2)$.
+
+A subsititution is a function mapping variables to terms.
 
 
 
