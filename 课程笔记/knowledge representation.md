@@ -132,6 +132,139 @@ To prove not P, we try to prove P. If proving P fails, the not P is True; if we 
 
 A subsititution is a function mapping variables to terms.
 
+#### Matching
+
+matching: 应该就是赋值，$=$ its role is to **match Variables with Atoms** in KB.
+
+variable doesn't have to be on the left side of $=$
+
+A variable in Prolog can only have one value during the execution of a query.
+
+##### Instantiation & Matching & Unification
+
+$=$ has two facets, instantiation and matching.
+
+Both these processes are internally used by Prolog to **do Unification**.
+
+- unification requires a term on either side of it
+- Variable = atom or atom = Variable is called instantiation
+- atom = atom or Variable1 = Variable2 is called matching
+
+##### Matching without unification
+
+use $==$ to match without unification（不做统一的匹配，表示直接对于值做匹配）
+
+This matches two terms, but to succeed, the two terms have to already have identical values.
+
+#### Structured object
+
+专门是对于compund form来说的，特点是，可以根据结构进行递归式的匹配，通过一个例子来进行说明
+
+```prolog
+parents(mother('npongo'), father(jambo))
+query1: ?- parents(mother(Mum), father(Dad))
+query2: ?- parents(Mum, Dad)
+query3: ?- parents(mother('npongo'), father(Dad))
+```
+
+##### Querying > 1 Goal through Variables
+
+在一次查询中，如果有多个term需要进行匹配，可以使用同一个变量来限制多个term之间的关系，可以理解为外键。使得unification的时候，多个term中的同一个Variable必须一致！
+
+When you would use more than one goal, use comma "," to connect them (often called the conjunction)
+
+#### Arithmetic
+
+- **is/2**: 用于求值数学表达式。它的作用是计算右边的数学表达式，并将结果赋给左边的变量
+- **=:=**：用于比较两个数学表达式是否相等
+- **=\\=**：用于比较两个数学表达式是否不相等
+- is 与 = 的区别， 一定要用于计算一个**数学表达式**，并且左边需要是变量
+
+#### Loops
+
+No traditional loops!
+
+we can obtain recursive calls by using recursive predicates.
+
+#### Lists
+
+Lists in Prolog begin with "[" and end with "]"
+
+values are separated by ","
+
+use recursive to find a member in the list
+
+manipulating list:
+
+- append(L1, L2, LR); 将两个列表连接成一个列表
+- nth0(Index, List, Element); 获取列表的第n个元素
+- nth0(Index, LR, Element, L)；将一个元素插入到列表的指定位置
+- delete(L, Element, LR); 删除列表中的指定元素
+- length(L, N); 计算列表的长度
+
+#### Cut Operator（!）
+
+the ! operator is a very useful operator for stopping backtracking
+
+can be used in the body of a rule
+
+It succeeds the first time when called, but then fails upon any backtracking attempt
+
+**Green Cut**: 如果cut的使用不会改变程序的逻辑，只是用于提高效率，称之为green cut
+
+**Red Cut**：如果cut的使用改变了程序的逻辑，可能会导致不正确的行为，因为可能组织了合法解的回溯
+
+#### If-then-else
+
+（A->B;C）：if A then B else C
+
+try and prove A. If you can, go on to prove B and ignore C.
+
+If proving A fails, go on to prove C and ignoring B.
+
+### Description Logic
+
+简单理解一下为什么需要Description Logic，与FOL的区别是什么
+
+- FOL是一种逻辑主要应用的是facts, rules并且注意在procedures and inferences，所有应用于逻辑推理以及一些数学的定理证明
+- description logic则比较注重于对于实际物体的表述，基于概念和角色，关注类别，关系和属性
+
+1. Objects naturally fall into categories and are often thought of as being members of multiple categories
+2. categories can be more general or more specific than others
+3. categories is natural for those with more complex descriptions
+4. objects have parts, somtimes in multiples
+5. the relationships among an object's parts is essential to its being considered a member of a category(不同的内部结构会影响对象的类别归属)
+
+#### Concept, roles and constants
+
+These three expressions are considered nonlogical symbols which means they are application-dependent.
+
+- **concept(classes, unary predicates)** are like category nouns ( groups of objects that share similar characteristics )
+- **roles(relations, binary predicates)** are like relational nouns ( predicates that have more than one argument representing a relation between them)
+- **constants(instances, constants)** are like proper nouns ( the instances of concepts )
+
+#### Some properties & Meanings
+
+- if r is a role, and d is a concept, then [ALL r d] is a concept. 如果r是一个角色，d是一个概念，那么得到的也是一个概念，ALL是全量约束（Universal Restriction）所有r关系的对象都是d类型的，用来表示对象的某种关系所关联的所有对象都属于特定的概念。
+- if r is a role, and n is a positive integer, the [EXISTS n r] is a concept. 如果r是一个角色，n是一个整数，那么得到的是一个概念。EXIST是至少约束（At Least Restriction）表示至少存在n个r关系的对象，用来表示一个对象在r关系中至少关联n个对象
+- if r is a role, and c is a constant, then [FILLS r c] is a concept. 如果r是一个角色，c是一个常量，那么得到的是一个概念，FILL是值约束（Value Restriction），表示对象在r关系中唯一地关联到c，表示该对象的r关系唯一地与c相连。
+- if d_1 ... d_n are concepts, then [AND d_1 ... d_n] is a concept. 如果d_1到 d_n是一些概念，那么得到的也是一个概念。这个规则定义了交集，表示对象同时满足的所有条件。
+- if d_1 and d_2 are concepts, then $d_1 \sqsubseteq d_2$ is a sentence. 意思就是所有d_1中的实例，都是d_2中的实例
+- if d_1 and d_2 are concepts, then $d_1 \dot= d_2$ is a sentence. 意思就是d_1与d_2是完全相等的
+- if d is a concept and c is a constant, then (c -> d) is a sentence. 意思就是如果一个实例满足c，那他必然是d的一个实例
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
