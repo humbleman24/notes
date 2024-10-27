@@ -253,9 +253,40 @@ These three expressions are considered nonlogical symbols which means they are a
 - if d_1 and d_2 are concepts, then $d_1 \dot= d_2$ is a sentence. 意思就是d_1与d_2是完全相等的
 - if d is a concept and c is a constant, then (c -> d) is a sentence. 意思就是如果一个实例满足c，那他必然是d的一个实例
 
+#### semantics of DL
 
+interpretation is the mapping from the nonlogical symbols of DL to elements and relations over the set of objects called the domain of interpretation.
 
+1. for every constant c, $\varphi(c) \in \delta $.
+2. for every atomic concept a, $\varphi(a) \subseteq \delta$
+3. for every role r, $\varphi(r) \subseteq \delta \times \delta$
 
+#### entailment in DL
+
+Teo basic sorts of reasoning we consider:
+
+- determining whether or not some constant c satisfies a certain concept d ( c -> d)
+
+- determining whether or not a concept d in subsumed by another concept d' ($d \subseteq d'$)
+
+#### Computing entailment in DL
+
+to  compute entailment, we will still use the above two basic sorts of reasoning.
+
+Before computing entailments, a normalisation needs to be performed.
+
+**Normalisation**
+
+1. Expand definitions: Any atomic concept that appears as the left-hand side of a sentence in the KB is replaced by its definition. 这里的意思就是对左边的atomic下了一个定义，所以以后但凡使用到这个concept都应该等价的转换到这个定义上做判断。
+2. Flatten the AND operators: AND 中不应该有嵌套的AND，这些都应该被提出来重新组合
+3. Combine the ALL operators: 在一个AND中，如果有对一个r的多个ALL的定义，应该将对应的d进行组合，形成一个符合的ALL来定义物体
+4. combine the EXISTS operators: 在一个AND中，如果对一个r有多个EXISTS的定义，应该取最大的n值做保留
+5. Deal with T: 当sentence中存在T，应该单独对这个句子进行处理，因为有时候T会让整个句子不在有用因为他不做任何的限定也就是没有任何的知识或description的提供；有时候又是无用的出现，可以在句子中之间删除这个概念
+6. Remove redundant expressions
+
+#### Computing Satisfaction
+
+如何在描述逻辑中通过知识库中的**子集关系**和**角色填充**等信息进行推理，即使结论并非直接显现，而是通过若干关联概念间接得到的。这种推理方式强调了描述逻辑在处理复杂知识关系和类推中的应用。
 
 
 
