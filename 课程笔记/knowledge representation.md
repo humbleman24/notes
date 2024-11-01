@@ -288,41 +288,156 @@ Before computing entailments, a normalisation needs to be performed.
 
 如何在描述逻辑中通过知识库中的**子集关系**和**角色填充**等信息进行推理，即使结论并非直接显现，而是通过若干关联概念间接得到的。这种推理方式强调了描述逻辑在处理复杂知识关系和类推中的应用。
 
+### Modern Description Logic
 
+The previous notation is not standard.
 
+With the standardisation, DL has become a fundamental part of the semantic web, through the development **Web Ontology Language(OWL)**
 
+#### ABox and TBox
 
+Formulas can be partitioned into two distinguished sets: 
 
+- one that contains all concept inclusions (TBox) 
 
+  contains the terminological knowledge:
 
+  concept definitions: 用于给一些concept下定义的
 
+  axioms： 给concept做限制的
 
+- one that contains all concept assertions and roles assertion (ABox)
 
+  contains assertions about individuals: 相当于给上面定义的concept进行赋值，形成KB
 
+#### $FL_0$ definition
 
+We define the logic $FL_0$  as a tuple ($Sym_{FL_0}, For_{FL_0}, Int_{FL_0}, \vDash_{FL_0}$)
 
+- $Sym_{FL_0}$: 表示符号集合，包括原子符号和构造符号
+- $ For_{FL_0}$: 表示公式集合，所有能够表达的逻辑公式  （包含的是ABox的集合）
+- $Int_{FL_0}$:  表示解释的集合，如何在特定语境中解释这些符号 （Interpretation）
+-  $\vDash_{FL_0}$:   表示逻辑推导关系
 
+#### Extention from $FL_0$
 
+$FL_{\bot}$ : 表示添加了$\bot$ 符号的 $FL_0$ 语言
 
+$FL_{\neg}$ : 表示添加了$\neg$ 符号的 $FL_{\bot}$ 语言
 
+### AL
 
+$AL$ ：等同于 $FL_{\exist}$ -------表示添加了${\exist}$ 符号$FL_{\neg}$ 语言 
 
+$AL$ is often considered as the archetypical description logic, from which others are defined.
 
+Each construct is assigned **a letter** that can be concatenated to $AL$ to form **the name of a particular DL** ! 
 
+#### AL extension
 
+**concept constructs** are new syntatic features that can make new kinds of complex concepts
 
+| Symbol        | Name                       | Syntax  | Semantics                                                    |
+| ------------- | -------------------------- | ------- | ------------------------------------------------------------ |
+| $\mathcal{A}$ | Value restriction          | ∀r.c    | {x ∈ Δ \|for all y ∈ Δ such that (x, y) ∈ I(r), y ∈ I(c)}    |
+| $\mathcal{E}$ | General existential        | ∃r.c    | {x ∈ Δ \| there exists y ∈ Δ such that (x, y) ∈ I(r) and y ∈ I(c)} |
+| $\mathcal{U}$ | Concept disjunction        | c ⊔ d   | I(c) ∪ I(d)                                                  |
+| $\mathcal{C}$ | General concept complement | ¬c      | Δ \ I(c)                                                     |
+| $\mathcal{O}$ | Nominal                    | {a}     | {I(a)}                                                       |
+| $\mathcal{N}$ | Cardinality restriction    | ≤ n.r   | {x ∈ Δ \|card({y ∈ Δ \|(x, y) ∈ I(r)}) ≤ n}                  |
+| $\mathcal{N}$ | Cardinality restriction    | ≥ n.r   | {x ∈ Δ \|card({y ∈ Δ \|(x, y) ∈ I(r)}) ≥ n}                  |
+| $\mathcal{Q}$ | Qualified cardinality      | ≤ n.r.c | {x ∈ Δ \|card({y ∈ Δ \|(x, y) ∈ I(r) and y ∈ I(c)}) ≤ n}     |
+| $\mathcal{Q}$ | Qualified cardinality      | ≥ n.r.c | {x ∈ Δ \|card({y ∈ Δ \|(x, y) ∈ I(r) and y ∈ I(c)}) ≥ n}     |
 
+**role constructs** are syntactic features than can make complex roles./
 
+| Symbol        | Name             | Syntax | Semantics                        |
+| ------------- | ---------------- | ------ | -------------------------------- |
+| $\mathcal{J}$ | Inverse role     | r⁻     | {(x, y) ∈ Δ × Δ \|(y, x) ∈ I(r)} |
+| (∩)           | Role conjunction | r ⊓ᵣ s | I(r) ∩ I(s)                      |
+| (∪)           | Role disjunction | r ⊔ᵣ s | I(r) ∪ I(s)                      |
+| (¬)           | Role complement  | ¬ᵣ r   | Δ × Δ \ I(r)                     |
 
+Axiom constructs are new types of formulas / sentences.
 
+| Symbol | Name                    | Syntax             | Semantics                                                    |
+| ------ | ----------------------- | ------------------ | ------------------------------------------------------------ |
+| 𝓕      | Role functionality      | ⊤ ⊑ ≤ 1.r          | if (x, y) ∈ I(r) and (x, z) ∈ I(r) then y = z                |
+| 𝓗      | Role hierarchy          | r ⊑ᵣ s             | I(r) ⊆ I(s)                                                  |
+| 𝓢      | 𝓐𝐿𝐶 + Role transitivity | Trans(r)           | if (x, y) ∈ I(r) and (y, z) ∈ I(r) then (x, z) ∈ I(r)        |
+| ℛ      | Role chain              | r₁ ∘ ... ∘ rₙ ⊑ᵣ s | if (x, y₁) ∈ I(r₁), ..., (yᵢ, yᵢ₊₁) ∈ I(rᵢ₊₁), ... then (x, yₙ) ∈ I(s) |
 
+#### ALC Reasoning Services
 
+**Ontology design** (本体设计) : we are bulding a **conceptual model** (TBox) for our domain; at this design stage we haven't yet **included the data**(ABox).
 
+本体：本体是一种形式化的知识表示，定义了**某个特定的领域中的概念**（对象，类别，属性）以及这些概念中的关系。它类似于一个**词汇表**，但不仅仅是词汇，还包括这些术语之间的结构化关系。
 
+TBox should be : **error free** and **suffficiently detailed**
 
+drive implicit information is detectable by solving concept subsumption (TBox)
 
+### Web Ontology Language
 
+In computer science, ontologies are countable, and an ontology is a formal and explicit specification of the concepts, entities, and relationships that exist within a particular domain or knowledge base.
 
+comprise the following parts:
+
+- logical theory: formal axioms that are true of the domain （约束和关系）
+- A documentation: definitions of what the terms in the theory are; what is their kind (class? relation?)
+
+OWL is an ontology language standard for web application ontologies (the semantic web)
+
+#### Main Components of an OWL Ontology
+
+- **classes**: concept，表示一个对象的类型或类别
+- **properties**：object properties （roles）用于连接两个个体；datatype properties连接个体与数据类型；annotation properties （ontology explanation for human users）
+- **individuals**：类的实例，表示具体的对象或实体
+
+#### Syntax
+
+**classes, hierarchies, individuals**
+
+- $ClassAssertion(:Woman :Mary)$ 做匹配
+
+- $SubClassOf(:Woman :Person)$ 
+
+- $EquivalentClasses(:Person :Human)$
+
+- $DisjointClasses(:Woman :Man)$
+
+- $SameIndividual(:James :Jim)$
+
+- $DifferentIndividuals(:John :Bill)$
+
+- $EquivalentClasses(:MyBirthdayGuests \\ObjectOneOf(:Bill :John :Mary))$
+
+  通过列出类的**所有成员**来定义该类
+
+- $EquivalentClasses(:Parent \\ ObjectUnionOf(:Mother :Father))$
+
+  通过多个类的**并集**来定义一个新的类
+
+- $EquivalentClasses(:Mother \\ ObjectIntersectionOf(:Parent :Woman))$
+
+  通过多个类的**交集**来定义一个新的类
+
+- $ClassAssertion(ObjectIntersectionOf(\\ :Person \\ ObjectComplementOf(:Parent)\\)\\ :Jack)$  
+
+  Complement: Jack is a person but not a parent
+
+**Quantification for the functional syntax**
+
+- Universal: [ALL r c] $EquivalentClasses(:HappyPerson \\ ObjectAllValueFrom(:hasChild :HappyPersion))$
+- Existential: [EXIST n r] $EquivalentClasses(:Parent \\ ObjectSomeValuesFrom(:hasChild :Person))$ 
+- Max cardinality: $ClassAssertion(ObjectMaxCardinality(4 :hasChild :Person)\\ :John)$
+- Min cardinality: $ClassAssertion(ObjectMinCardinality(2 :hasChild :Person)\\ :John)$
+- Exact cardinality: $ClassAssertion(ObjectExactCardinality(3 :hasChild :Person)\\ :John)$
+
+Other properties
+
+- Value restrictions: $EquivalentClasses(:JohnsChild \\ ObjectHasValue(:hasParent :John))$ 
+- self restrictions: $EquivalentClasses(:NarcissticPerson \\ ObjectHasSelf(:loves))$ 
 
 
 
