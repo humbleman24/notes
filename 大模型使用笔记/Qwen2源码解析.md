@@ -1,6 +1,6 @@
 # Qwen2 源码解析 2
 
-<img src="D:\notes\pic\Qwen2结构图.jpg" alt="Qwen2" style="zoom: 33%;" />
+<img src="..\pic\Qwen2结构图.jpg" alt="Qwen2" style="zoom: 33%;" />
 
 获取Qwen2的config，Qwen2.5的config是与2一致的
 
