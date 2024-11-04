@@ -439,5 +439,161 @@ Other properties
 - Value restrictions: $EquivalentClasses(:JohnsChild \\ ObjectHasValue(:hasParent :John))$ 
 - self restrictions: $EquivalentClasses(:NarcissticPerson \\ ObjectHasSelf(:loves))$ 
 
+**Property types**
 
+- each object property **(roles)** must be declared: Declaration(ObjectProperty(:hasPet))
+- named individuals **(individuals)** must be declared: Declaration(NamedIndividual(:Dumbledore))
+- datatype property must be declared: Declaration(DataProperty(:age))
+
+----------------------------
+
+- Inverse properties: $InverseObjectProperties(:hasParent :hasChild)$
+
+- symmetric and asymmetric: $SymmetricObjectProperty(:hasSpouse) \\ AsymmetricObjectProperty(:hasChild)$
+
+- disjointness: $DisjointObjectProperties(:hassParent :hasSpouse)$
+
+- reflexive and irreflexive: $ReflexiveObjectProperty(:hasRelative) \\ IrreflexiveObjectProperty(:parentOf)$
+
+- Transitve properties: $TransitiveObjectProperty(:hasAncestor)$
+
+- Functional properties: $FunctionalObjectProperty(:hasHusband)$
+
+  功能性属性指的是每个个体在该属性下至多只能有一个值
+
+- Inverse-functional properties: $InverseFunctionalObjectProperty(:hasHusband)$
+
+- subproperty relations and property chain: $SubjectPropertyOf(ObjectPropertyChain(:hasParent :hasParent) \\ :hasGrandparent)$
+
+- keys: identify uniquely individuals by values of key properties
+
+  $HasKey(:RegisteredParent :hasWaitingListN)$
+
+- Object property value: $ObejectPropertyAssertion(:hasWife :John :Mary) \\ NegativeObjectPropertyAssertion(:hasWife :Bill :Mary)$
+
+- Domain / Range restrictions: $ObjectPropertyDomain(:hasWife :Man) \\ ObjectPropertyRange(:hasWife :woman)$
+
+  domain 是定义域，range是值域
+
+### Non-Monotonic Reasoning
+
+Non-monotonic reasoning deals with the problem of deriving plausible conclusions, **but not infallible**, from a knowledge base.
+
+Since the conclusions are not certain, it must be possible to retract some of them if new information shows that they are wrong.
+
+**Closed World Assumption**: only positive information is represented explicitly. Negative information is not represented explicitly. understand the following statement:
+
+you can prove something (negative) because **we can't conclude it** not because **we can prove it**!
+
+CWA is a non-monotonic!
+
+**Frame Problem**: 我理解的frame problem，指的是，由于你要描述物体改变状态后，某些属性是否改变，则你需要把所有的改变状态对属性的影响全部写出来，否则CWA会认为有改变，这是一个棘手的问题，应为很大情况下，你并不能把所有的变化操作给列举出来。
+
+#### Default Logic
+
+default logic adds the concept of 'generality'
+
+Goal: be able to say a P is a Q in general, but not necessarily 
+
+it is reasonable to conclude Q(a) given P(a), unless there is a good reason not to
+
+**Varieties of Defaults**
+
+- general statements:
+
+  - prototypocal: the prototypical P is a Q    e.g. Owls typically hunt at night
+  - Normal: Under typical sircumstances, P's are Q's    e.g. People work close to where they live
+  - Statistical: Most P's are Q's.    e.g. The people in the waiting room are growing impatient
+
+- Lack of information to the contrary
+
+  - Group confidence: All known P's are Q's  e.g. Natural languages are easy for children to learn
+  - Familiarity:  If a P was not a Q, you would know it. An older brother
+
+- Conventioanl
+
+  - conversational:  Unless I tell you otherwise, a P is a Q   
+
+    e.g. There is a gas station two blocks east   ----> the gas station is open
+
+  - Representational: Unless otherwise indicated, a P is a Q    e.g. the speed limit in a city
+
+- Persistence
+
+  - Inertia: a P is a Q if it is used to be a Q   e.g. Colours of objects, locations of parked cars
+
+Default Logic is a nonmonotonic reasoning **formalism** desgined to handle reasoning with defaults, or typical **assumptions** (above mentioned), **in situations where complete information may not be available**.
+
+It extends classical logic by **non-standard inference rules**.
+$$
+\begin{align}
+\frac{bird(x)\ \ \ \ \ \ :fly(x)}{fly(x)}
+\end{align}
+$$
+interpreted as: if x is a bird and we can consistently assume that x flies then we can infer that x flies!
+$$
+\begin{align}
+\frac{P(x) :\   Q_1(x) Q_2(x).....Q_n(x)}
+{R(x)}
+\end{align}
+$$
+General form: if $P(x)$ holds and $Q_1(x) Q_2(x).....Q_n(x)$ can be consistently assumed then we can conclude $R(x)$.
+
+Terminology:
+
+- $P(x)$: the prerequisite, a condition that must be true for the default to be considered
+- $Q_1(x) Q_2(x).....Q_n(x)$: the justification, conditions that are assumed to be true unless there is evidence to the contrary.
+- $R(x)$ the consequent, what can be concluded if the prerequisite is true and the justifications are consistent with the current knowledge
+
+**default theory**
+
+a default theory is a pair $<D,W>$, where D is a set of default rules and W is a set of first-order formulas.
+
+#### Extensions 
+
+The notion of extension of a default theory: the theory obtained by extending W by the rules in D. Defined by E
+
+E is deductively closed: $E = Th(E)$
+
+##### Semi-inductive definition
+
+The order in which defaults are considered in step Deriving is significant:
+
+different orders give rise to different extensions
+
+##### Normal default
+
+default logic is considered to have normal default rules.
+
+a normal default is a default rule where the **justification and the conclusion are the same**
+
+a default d is normal if has the form $\frac{\alpha : \beta}{\beta}$
+
+A normal default theory is a default theory where all defaults in D are normal.
+
+**Theorem**: A normal default theory always has an extension
+
+##### Inference relation
+
+- credulous inference: if there **exists** an extension of default theory such that A is in E
+
+  If it is possible, i will believe it.
+
+- skeptical inference: if for **all** extensions E of default theory, we have A in E. 
+
+  I will only believe it if it is guaranteed to be true in every possible extension
+
+#### Problems with default logic
+
+unwanted transitivity
+
+semi-normal: the justification implies the consequent
+
+A semi-normal default theory (= a theory where all default are semi-normal) may have no extensions
+
+Add priority to the default defaults
+
+There is no notion of entailment amongst defaults
+
+**Auto epistemic logic ** defaults are represented as sentences and can be reasoned with 
 
