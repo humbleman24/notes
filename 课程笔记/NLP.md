@@ -308,3 +308,15 @@ designed for sequence-to-sequence tasks.
 - the previous output tokens are input back into the decoder
 - the decoder only generates one text token at a time
 
+#### Position Embedding
+
+transformers fully replace the recurrent units with attention. Consequently, a natural limitation of the transformer is that it lacks inherent positional information.
+
+the transformer needs to explicitly encode the position information
+
+Just as word embeddings assign an independent vector to each word, position embeddings assign an independent vector to each position.
+
+two methods to obtain position embeddings:
+
+- Learned position Embeddings: in this approach, each position in the input sequence is assigned a unique embedding vector, which is learned during the training process. 
+-  Sinusoidal position embeddings: this method involves using fixed sinusoidal functions to generate position embeddings. The embeddings are determined based on sine and cosine functions of different frequencies, which encode the position in a way that preserves relative distances between tokens.
