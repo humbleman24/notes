@@ -67,7 +67,7 @@ employ $h = 8$ parallel attention layers or heads. for each $d_k = d_v = d_(mode
 
 * encoder-decoder attention layers: $Q$ come from the previous **decoder layer**, $K, V$ come from output of the **encoder**
 * encoder layers, the self-attention would let the each position to attend all positions in the previous layer
-* decoder layers, the masked attention is required
+* decoder layers, the masked attention is required. this is for preserve the auto-regressive property.
 
 #### Position-wise Feed-Forward Networks
 
@@ -75,29 +75,42 @@ consists of two linear transformations with a ReLU activation function in betwee
 
 the dimensionality of input and output is $d_(model) = 512$,  and the inner-layer has dimensionality $d_(ff) = 2048$
 
+#### Embedding and Softmax
+
+use learned embedding to convert the input tokens and output tokens to vectors of dimension $d_{model}$. 
+
+use the usual learned linear transformation and softmax function to convert the decoder output to predicted next-token probabilities.
+
 **share** the same weight matrix between two embedding layers and the pre-softmax linear transformation.
 
+#### Positional Embedding
 
+in order to make use of the order of the sequence, we must inject some information about the relative or absolute position of the tokens in the sequence.
 
+add positional encoding to the input embedding at the bottoms of the encoder and decoder stacks.
 
+the positional encoding have the same dimension $d_{model}$ as the embedding, so that the two can be directly summed.
 
- 
+positional encoding can be learned and fixed.
 
+use **sine and cosine functions of different frequencies**:
+$$
+PE_{(pos, 2i)} = \sine (\frac{pos}{10000^{\frac{2i}{d_{model}}}}) \\
+PE_{(pos, 2i+1)} = \cosine (\frac{pos}{10000^{\frac{2i}{d_{model}}}})
+$$
+$pos$ is the position and $i$ is the dimension. That is, each dimension of the positional encoding corresponds to a sinusoid.
 
+we hypothesized it would allow the model to easily learn to attend by relative positions, since for any fixed offset k, $PE_{pos+k}$ can be represented as a linear function of $PE_{pos}$. 这里的意思也就是说，模型可以学习到相对位置编码的线性变化，也就是学习到位置之间的关系函数，模型能够有效的利用到句子中的位置信息。
 
+### Why self-attention
 
+computational complexity and amount of computation
 
+path length between long-range dependencies in the network. 
 
+self-attention connects all positions with a constant number of sequentially executed operations.
 
-
-
-
-
-#
-
-
-
-
+convolution are generally more expansive than recurrent layers, however, he complexity is equal to the combination of a self-attention layer and a point-wise feed-forward layer.
 
 
 
