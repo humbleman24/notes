@@ -112,7 +112,27 @@ self-attention connects all positions with a constant number of sequentially exe
 
 convolution are generally more expansive than recurrent layers, however, he complexity is equal to the combination of a self-attention layer and a point-wise feed-forward layer.
 
+#### side knowledge
 
+##### label smoothing
+
+首先这是一种正则化的技术，常用于分类任务中，以防止模型过拟合和对数据噪声过度敏感
+
+核心思想：不将目标概率完全设置为1，而是将一定的概率分散到所有类别上，使得目标的概率分布更加平滑。
+$$
+q_i =  
+\begin{cases}
+1-\epsilon + \frac{\epsilon}{C} & \text{if } i < y_{true}, \\
+\frac{\epsilon}{C}              & \text{otherwise}.
+\end{cases}
+$$
+优势：缓解模型的过拟合，提高模型的泛化能力，梯度更加稳定
+
+##### beam search
+
+这是一种启发式搜索算法，广泛用于自然语言处理中的序列生成任务。
+
+在选择每一个词的时候，都保留$k$个概率最高的候选序列，这时候候选序列就被称为了**beam**，避免了全局搜索的高计算成本，同时显著提高了生成的质量。
 
 
 
