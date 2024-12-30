@@ -69,11 +69,11 @@ $Pr(y) = \sum_{x\in A} Pr(y|x)Pr(x)$
 
 #### Definitions for HMM
 
-State space of n states for Markov model S;  Transition probabilities (matrix) A;  set of m observed symbols V;  Observed symbol probability matrix B;   Initial state distribution $\pi_i$
+State space of **n** states for Markov model S;  Transition probabilities (matrix) **A;**  set of m observed symbols **V**;  Observed symbol probability matrix **B**;   Initial state distribution $\pi_i$
 
 problem: compute the probability of observed sequence $O = \{O_0, ... , O_T\}$, given the parameters $\lambda = \{A, B, n, m, \pi\}$ are known.
 
-solution: decompose the problem by summing the probabilities for all the possible hidden state sequences $Q = \{q_0, ... , q_t\}$ :     $Pr(O|\lambda) = \sum_{all Q} Pr(O|Q, \lambda) Pr(Q|\lambda)$ 
+solution: decompose the problem by summing the probabilities for all the possible hidden state sequences $Q = \{q_0, ... , q_t\}$ :     $Pr(O|\lambda) = \sum_{all Q} Pr(O|Q, \lambda) Pr(Q|\lambda)$   这里的Q其实就是所有可以满足O出现的一系列状态的可能性    
 
 <img src="../pic/HMM_observation_calculation.png" style="zoom:50%;" />
 
@@ -353,6 +353,33 @@ parameters $\alpha \ and \ \beta$ define the relative weights of $\eta \ and \ \
 
 ## Artificial neural network
 
+### Initialization
+
+simplest method is zero initialization but often used for biases
+
+Normal initialization uses narrow Gaussian distribution $N(0, 0.01)$ 这里的variance很小所以会很narrow
+
+- Glorot (Xavier) initialization: $w_i - u(-\frac{\sqrt{6}}{\sqrt{n_{in}+n_{out}}}, \frac{\sqrt{6}}{\sqrt{n_{in}+n_{out}}})$ uniform distribution
+- He initialization: $w_i - N(0, \frac{2}{n_{in}})$ 正态分布中抽样
+
+He works better with ReLU activation, Glorot (Xavier) works better with Sigmoid and Softmax
+
+good idea to use different initialization for different layers
+
+both methods assume normalized input, so batch normalization layer is good choice
+
+### Optimizer
+
+SGDM, Adam $\theta^{(t+1)} = \theta^{(t)} - \alpha\frac{m^t}{\sqrt{v_t}+\epsilon}$
+
+adam converge faster, but sgdm is more robust to overfitting, adam is more robust to bad parameter choices
+
+sgdm is the first choice to train CNNs, whereas Adam is first choice to train transformers
+
+### learning rate scheduler
+
+step-based decay, exponential decay, cosine annealing, cyclic learning rate
+
 #### Overfitting
 
 strategy:
@@ -368,26 +395,120 @@ strategy:
 - Dropout: sets part of the input values randomly to zeros, helps model find alternative paths to reach similar output, making model more robust
 
   - dropout: up above
-
   - dropout scaling: during training, dropout layer should scale the inputs not set to zero by 1 / (1 - r) to keep the **sum of the input statistically unchanged**
   - Gaussian dropout: Gaussian noise is added to the input. random multiplier follows 1-centered Gaussian distribution; statistical distribution of the values does not change, so there is no need for additional scaling of the inputs 随机扰动让神经网络更具鲁棒性，防止过拟合。
-  - 
-
-- 
-
+  
+- data augmentation: increase number of training samples. 
 
 
 
 
 
 
+## Recurrent Network
 
+RNN can be used for sequence-to-sequence, sequence-to-one, one-to-sequence
 
+In RNN, output $y_t$ for time step t is not dependent only on the corresponding input $x_t$, but also on the hidden state $h_t$ 
 
+basic RNN computations:
+$$
+h_t = \varphi(W_h h_{t-1}+W_xx_t+b) \\
+y_t = \varphi(W_yh_t)
+$$
+原来是先使用前一个的隐状态和当先的输入，计算出当前的隐状态，然后基于这个隐状态来计算y的输出
 
+often tanh is used as activation function in RNNs
 
+![](../pic/rnn-types.png)
 
+#### Sequence to one
 
+used for classifying sequence
+
+text is mapped to **numerical vectors** and end with a special token denoting the end of sentence.
+
+training: time steps can be considered as layers with **shared weights**. gradients for different time steps will not be the same: compute the **average for recurrent weight gradients** for optimization
+
+### one to sequence 
+
+for generating text
+
+CNN is used to generate a vector representation of the image
+
+use output as input to the following time steps
+
+each output contributes to the loss individually, so each time step adds an additional loss term in the total loss
+
+### sequence to sequence
+
+can be implemented for synchronized output or delayed output
+
+synchronized output used for rolling prediction of time series
+
+delayed output is useful, system needs to receive the whole input sequence before starting to generate output.
+
+### Encoder decoder RNN
+
+Encoder encodes the input as hidden state, decoder generates output
+
+encoder use sequence-to-one, and decoder use one-to-sequence
+
+### bidirectional RNN
+
+beneficial for RNN to use also the future inputs
+
+Bidirectional RNN generates the output using two hidden states: one computed using the original sequence, the other one using it reversed
+
+![](../pic/bidirection-rnn.png)
+
+### GRU and LSTM
+
+hidden state should include information of all the past inputs, however the information from the past gets diluted, since deep models suffer from vanishing gradient
+
+**LSTM**:
+
+The intuition behind LSTM is that the networks learn **when to remember and when to forget information**
+
+three **types** of gates to control the flow of information
+
+each gate is in practice a linear layer with learnable parameters
+
+has memory cell $c_t$ 
+
+![](../pic/LSTM-arch.png)
+
+**four gates** to decide which information to forget and keep: 
+
+- forget gate decides which information to discard from $c_{t-1}$
+- input gate decides which new information to store $c_t$
+- output gate decide what information to output in $h_t$
+
+**GRU**
+
+simpler than LSTM with less gates and hidden information
+
+perform as well as LSTM
+
+GRU includes a gating mechanism to input or forget certain features.
+
+GRU does not have an output vector: hidden state can be used as output
+
+![](../pic/GRU-arch.png) 
+
+$z_t$ is the update gate vector that emphasizes the elements in hidden state that should be updated
+
+$r_t$ is the reset gate vector that emphasizes the elements in hidden state that should be forgotten
+
+## Attention and transformers
+
+### scaled dot-product attention
+
+attention A formulated as a function of query, key and value metrices Q, K, V with parameter $d_k$ indicating the length of keys: $A(Q	,K,V) = Softmax(\frac{QK^T}{\sqrt{d_k}})V$ 
+
+ encoder only are useful for text classification type of task
+
+decoder only are useful for text generation without input
 
 
 
